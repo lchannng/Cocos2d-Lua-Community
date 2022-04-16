@@ -23,9 +23,36 @@
 # ****************************************************************************/
 cmake_minimum_required(VERSION 3.6)
 
+# CMP0091 - runtime  (https://cmake.org/cmake/help/v3.15/policy/CMP0091.html)
+if (POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW)
+endif ()
+
+if(WIN32)
+    set(VCPKG_TARGET_TRIPLET x64-windows-static)
+endif()
+
+if(DEFINED ENV{VCPKG_ROOT})
+    set(VCPKG_ROOT $ENV{VCPKG_ROOT})
+else()
+    set(VCPKG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/cocos2d-x/external/vcpkg)
+endif()
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+
 set(APP_NAME __PROJECT_COCOS_NAME__)
 
 project(${APP_NAME})
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(MSVC)
+    # 1. Clear the default content of CMAKE_MSVC_RUNTIME_LIBRARY
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "")
+
+	# 2. Set the compiler options for the static multithreaded version.
+	add_compile_options($<$<CONFIG:>:/MT> $<$<CONFIG:Debug>:/MTd> $<$<CONFIG:Release>:/MT>)
+endif()
 
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)

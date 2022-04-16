@@ -18,103 +18,153 @@ option(BUILD_EXT_EDTAA3FUNC "Build with internal edtaa3func support" ON)
 option(BUILD_EXT_CONVERTUTF "Build with internal ConvertUTF support" ON)
 option(BUILD_EXT_POLY2TRI "Build with internal poly2tri support" ON)
 option(BUILD_EXT_MD5 "Build with internal md5 support" ON)
-option(BUILD_EXT_ZLIB "Build with internal zlib support" ON)
 option(BUILD_EXT_CURL "Build with internal curl support" ON)
 option(BUILD_EXT_UNZIP "Build with internal unzip support" ON)
 
 add_library(external empty.cpp)
 
-# OpenAL
-add_subdirectory(OpenAL)
-target_link_libraries(external ext_OpenAL)
-# OGG
-add_subdirectory(libvorbis)
-target_link_libraries(external ext_libvorbis) # before ogg, make android link happy
-add_subdirectory(libogg)
-target_link_libraries(external ext_libogg)
+# vcpkg:zlib
+find_package(ZLIB REQUIRED)
+target_link_libraries(external ZLIB::ZLIB)
+
+# vcpkg:libpng
+find_package(libpng CONFIG REQUIRED)
+target_link_libraries(external png_static)
+
+# vcpkg:openal-soft
+find_package(OpenAL CONFIG REQUIRED)
+target_link_libraries(external OpenAL::OpenAL)
+
+# vcpkg:libogg
+find_package(Ogg CONFIG REQUIRED)
+target_link_libraries(external Ogg::ogg)
+
+# vcpkg libvorbis
+find_package(Vorbis CONFIG REQUIRED)
+target_link_libraries(external Vorbis::vorbis)
+target_link_libraries(external Vorbis::vorbisfile)
+target_link_libraries(external Vorbis::vorbisenc)
+
 # FAAD2
 add_subdirectory(faad2)
 target_link_libraries(external ext_libfaad)
 
+# vcpkg:box2d
 if(BUILD_EXT_BOX2D)
-    add_subdirectory(Box2D)
-    target_link_libraries(external ext_box2d)
+    find_package(box2d CONFIG REQUIRED)
+    target_link_libraries(external box2d::box2d)
 endif(BUILD_EXT_BOX2D)
+
 if(BUILD_EXT_CHIPMUNK)
+    set(CP_BUILD_SHARED OFF CACHE BOOL "Build chipmunk as shared library" FORCE)
+    set(CP_BUILD_STATIC ON CACHE BOOL "Build chipmunk as static library" FORCE)
+    set(CP_BUILD_DEMOS OFF CACHE BOOL "Build chipmunk demos" FORCE)
+    set(CP_INSTALL_STATIC OFF CACHE BOOL "Install chipmunk static" FORCE)
     add_subdirectory(chipmunk)
-    target_link_libraries(external ext_chipmunk)
+    set_target_properties(chipmunk PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/chipmunk/include"
+        FOLDER "External"
+    )
+
+    # !important adxe not use double precision
+    target_compile_definitions(chipmunk PUBLIC CP_USE_CGTYPES=0)
+    target_compile_definitions(chipmunk PUBLIC CP_USE_DOUBLES=0)
+
+    #~ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/chipmunk/include")
+    target_link_libraries(external chipmunk)
 endif(BUILD_EXT_CHIPMUNK)
+
+# vcpkg:freetype
 if(BUILD_EXT_FREETYPE2)
-    add_subdirectory(freetype2)
-    target_link_libraries(external ext_freetype)
+    find_package(freetype CONFIG REQUIRED)
+    target_link_libraries(external freetype)
 endif(BUILD_EXT_FREETYPE2)
+
 if(BUILD_EXT_RECAST)
     add_subdirectory(recast)
     target_link_libraries(external ext_recast)
 endif(BUILD_EXT_RECAST)
+
 if(BUILD_EXT_BULLET)
     add_subdirectory(bullet)
-    target_link_libraries(external ext_bullet)
+    target_link_libraries(external bullet)
 endif(BUILD_EXT_BULLET)
+
+# vcpkg:libjpeg-turbo
 if(BUILD_EXT_JPEG)
-    add_subdirectory(jpeg)
-    target_link_libraries(external ext_jpeg)
+    find_package(JPEG REQUIRED)
+    target_link_libraries(external ${JPEG_LIBRARIES})
+    target_include_directories(external PUBLIC ${JPEG_INCLUDE_DIR})
 endif(BUILD_EXT_JPEG)
+
+# vcpkg:libwebp
 if(BUILD_EXT_WEBP)
-    add_subdirectory(webp)
-    target_link_libraries(external ext_webp)
+    find_package(WebP CONFIG REQUIRED)
+    target_link_libraries(external WebP::webp WebP::webpdemux WebP::libwebpmux WebP::webpdecoder)
 endif(BUILD_EXT_WEBP)
+
+# vcpkg:libwebsockets
 if(BUILD_EXT_WEBSOCKETS)
-    add_subdirectory(websockets)
-    target_link_libraries(external ext_websockets)
+    find_package(libwebsockets CONFIG REQUIRED)
+    target_link_libraries(external websockets)
 endif(BUILD_EXT_WEBSOCKETS)
+
 if(BUILD_EXT_TINYXML2)
     add_subdirectory(tinyxml2)
     target_link_libraries(external ext_tinyxml2)
 endif(BUILD_EXT_TINYXML2)
+
 if(BUILD_EXT_XXHASH)
     add_subdirectory(xxhash)
     target_link_libraries(external ext_xxhash)
 endif(BUILD_EXT_XXHASH)
+
 if(BUILD_EXT_XXTEA)
     add_subdirectory(xxtea)
     target_link_libraries(external ext_xxtea)
 endif(BUILD_EXT_XXTEA)
+
 if(BUILD_EXT_CLIPPER)
     add_subdirectory(clipper)
     target_link_libraries(external ext_clipper)
 endif(BUILD_EXT_CLIPPER)
+
 if(BUILD_EXT_EDTAA3FUNC)
     add_subdirectory(edtaa3func)
     target_link_libraries(external ext_edtaa3func)
 endif(BUILD_EXT_EDTAA3FUNC)
+
 if(BUILD_EXT_CONVERTUTF)
     add_subdirectory(ConvertUTF)
     target_link_libraries(external ext_convertUTF)
 endif(BUILD_EXT_CONVERTUTF)
+
 if(BUILD_EXT_POLY2TRI)
     add_subdirectory(poly2tri)
     target_link_libraries(external ext_poly2tri)
 endif(BUILD_EXT_POLY2TRI)
+
 if(BUILD_EXT_MD5)
     add_subdirectory(md5)
     target_link_libraries(external ext_md5)
 endif(BUILD_EXT_MD5)
+
+# vcpkg:curl
 if(BUILD_EXT_CURL)
-    add_subdirectory(curl)
-    target_link_libraries(external ext_curl)
+    find_package(CURL CONFIG REQUIRED)
+    target_link_libraries(external CURL::libcurl)
 endif(BUILD_EXT_CURL)
+
 if(BUILD_EXT_OPENSSL)
-    add_subdirectory(openssl)
-    target_link_libraries(external ext_ssl)
-    target_link_libraries(external ext_crypto)
+    find_package(OpenSSL REQUIRED)
+    target_link_libraries(external OpenSSL::SSL OpenSSL::Crypto)
 endif(BUILD_EXT_OPENSSL)
-add_subdirectory(png)
-target_link_libraries(external ext_png)
 
 # use lua/js specific libs by property to prevent conflict
 if(BUILD_LUA_LIBS)
-    add_subdirectory(lua/luajit)
+    # add_subdirectory(lua/luajit)
+    set(LUA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lua/lua54)
+    add_subdirectory(lua/lua54)
     add_subdirectory(lua/tolua)
     add_subdirectory(lua/cjson)
     add_subdirectory(lua/lfs)
@@ -125,10 +175,10 @@ if(BUILD_LUA_LIBS)
     add_subdirectory(lua/luasocket)
     add_subdirectory(lua/lunqlite)
     add_subdirectory(lua/lzlib)
-    add_subdirectory(lua/protobuf)
+    # add_subdirectory(lua/protobuf)
     add_subdirectory(lua/lua-protobuf)
-    set_property(TARGET external APPEND PROPERTY 
-        CC_LUA_DEPEND ext_luajit ext_tolua ext_cjson ext_lfs ext_lpack ext_lpeg ext_lsproto ext_lsqlite3 ext_luasocket ext_lunqlite ext_lzlib ext_protobuf ext_lua-protobuf
+    set_property(TARGET external APPEND PROPERTY
+        CC_LUA_DEPEND ext_lua54 ext_tolua ext_cjson ext_lfs ext_lpack ext_lpeg ext_lsproto ext_lsqlite3 ext_luasocket ext_lunqlite ext_lzlib ext_lua-protobuf
     )
 endif()
 
@@ -138,19 +188,16 @@ if(ANDROID)
 endif()
 
 if(WINDOWS)
-    add_subdirectory(glew)
-    target_link_libraries(external ext_glew)
+    # vcpkg:glew
+    find_package(GLEW REQUIRED)
+    target_link_libraries(external GLEW::GLEW)
 endif()
 
 if(WINDOWS OR MACOSX OR LINUX)
-    add_subdirectory(glfw3)
-    target_link_libraries(external ext_glfw3)
+    # vcpkg:glfw3
+    find_package(glfw3 CONFIG REQUIRED)
+    target_link_libraries(external glfw)
 endif()
-
-if(BUILD_EXT_ZLIB)
-    add_subdirectory(zlib)
-    target_link_libraries(external ext_zlib)
-endif(BUILD_EXT_ZLIB)
 
 # unzip depend on zlib
 if(BUILD_EXT_UNZIP)
@@ -168,7 +215,7 @@ set_target_properties(external
 
 if(MACOSX OR IOS)
     add_subdirectory(glsl-optimizer)
-    target_link_libraries(external 
+    target_link_libraries(external
     ext_glcpp_library
     ext_glsl_optimizer
     ext_libmesa

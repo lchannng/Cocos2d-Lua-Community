@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#define tolua_pushcppstring(x,y)                lua_pushlstring(x, y.c_str(), y.length())
+#define tolua_pushcppstring(x,y)                tolua_pushstring(x,y.c_str())
 #define tolua_iscppstring                       tolua_isstring
 
 #define tolua_iscppstringarray                  tolua_isstringarray
@@ -47,6 +47,25 @@ typedef int lua_Object;
 
 #include "lua.h"
 #include "lauxlib.h"
+
+#if LUA_VERSION_NUM >= 502
+#define lua_setfenv lua_setuservalue
+#define lua_getfenv lua_getuservalue
+#define lua_open luaL_newstate
+#if !defined(LUA_COMPAT_5_1) && !defined(LUA_COMPAT_ALL)
+#define lua_objlen(L,i)		lua_rawlen(L, (i))
+#endif
+#endif
+
+#if LUA_VERSION_NUM >= 504
+TOLUA_API const char* luaL_findtable(lua_State* L, int idx,
+    const char* fname, int szhint);
+TOLUA_API void luaL_pushmodule(lua_State* L, const char* modname,
+    int sizehint);
+TOLUA_API void luaL_openlib(lua_State* L, const char* libname,
+    const luaL_Reg* l, int nup);
+#define luaL_register(L,n,l)	(luaL_openlib(L,(n),(l),0))
+#endif
 
 struct tolua_Error
 {
@@ -119,12 +138,13 @@ TOLUA_API void tolua_pushfieldstring (lua_State* L, int lo, int index, const cha
 TOLUA_API void tolua_pushfielduserdata (lua_State* L, int lo, int index, void* v);
 TOLUA_API void tolua_pushfieldusertype (lua_State* L, int lo, int index, void* v, const char* type);
 TOLUA_API void tolua_pushfieldusertype_and_takeownership (lua_State* L, int lo, int index, void* v, const char* type);
-    
+
 TOLUA_API void tolua_pushusertype_and_addtoroot (lua_State* L, void* value, const char* type);
 TOLUA_API void tolua_add_value_to_root (lua_State* L,void* value);
 TOLUA_API void tolua_remove_value_from_root (lua_State* L, void* value);
 
 TOLUA_API lua_Number tolua_tonumber (lua_State* L, int narg, lua_Number def);
+TOLUA_API lua_Integer tolua_tointeger(lua_State* L, int narg, lua_Integer def);
 TOLUA_API const char* tolua_tostring (lua_State* L, int narg, const char* def);
 TOLUA_API void* tolua_touserdata (lua_State* L, int narg, void* def);
 TOLUA_API void* tolua_tousertype (lua_State* L, int narg, void* def);

@@ -14,14 +14,18 @@ add_library(${target_name} STATIC
 )
 
 target_include_directories(${target_name}
-  PRIVATE ../luajit/include
-  PRIVATE ../../zlib/include
+  PRIVATE ${LUA_INCLUDE_DIR}
+
+  # zlib from vcpkg
+  PRIVATE ${ZLIB_INCLUDE_DIR}
 )
+
+# target_link_libraries(${target_name} PRIVATE ZLIB:ZLIB)
 
 set_target_properties(${target_name}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    FOLDER "External"
+    FOLDER "External/lua"
 )
 

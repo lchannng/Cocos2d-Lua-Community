@@ -287,7 +287,7 @@ public:
     /**get enable angular motor*/
     bool getEnableAngularMotor() const;
     /**get motor target velocity*/
-    float getMotorTargetVelosity() const;
+    float getMotorTargetVelocity() const;
     /**get max motor impulse*/
     float getMaxMotorImpulse() const;
     

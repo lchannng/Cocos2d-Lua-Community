@@ -17,10 +17,13 @@ add_library(${target_name} STATIC
 
 target_include_directories(${target_name} PUBLIC .)
 
+find_package(ZLIB REQUIRED)
+target_link_libraries(${target_name} PRIVATE ZLIB::ZLIB)
+
+
 if(MACOSX OR ANDROID OR WINDOWS)
-  get_target_property(zlib_header ext_zlib INTERFACE_INCLUDE_DIRECTORIES)
-  target_include_directories(${target_name} PRIVATE ${zlib_header}
-)
+  # get_target_property(zlib_header ext_zlib INTERFACE_INCLUDE_DIRECTORIES)
+  # target_include_directories(${target_name} PRIVATE ${zlib_header}
 endif()
 
 set_target_properties(${target_name}

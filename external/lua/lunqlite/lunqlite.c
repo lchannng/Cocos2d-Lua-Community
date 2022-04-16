@@ -30,7 +30,7 @@ static int lunqlite_open(lua_State* L){
 	int rc;
 	unqlite *pDb;
 	const char *filename = luaL_checkstring(L, 1);
-	int mod = luaL_checkint(L,2);
+	int mod = luaL_checkinteger(L,2);
 	rc = unqlite_open(&pDb,filename,mod);
 	if( rc != UNQLITE_OK )
 	{

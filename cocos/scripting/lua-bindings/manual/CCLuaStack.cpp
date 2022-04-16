@@ -69,8 +69,7 @@ namespace {
             size_t sz;
             s = lua_tolstring(L, -1, &sz);  /* get result */
             if (s == NULL)
-                return luaL_error(L, LUA_QL("tostring") " must return a string to "
-                                  LUA_QL("print"));
+                return luaL_error(L, "'tostring' must return a string to 'print'");
             if (i>1) out->append("\t");
             out->append(s, sz);
             lua_pop(L, 1);  /* pop result */
@@ -187,25 +186,32 @@ void LuaStack::addSearchPath(const char* path)
 
 void LuaStack::addLuaLoader(lua_CFunction func)
 {
-    if (!func) return;
+    if (!func)
+        return;
+
+#if LUA_VERSION_NUM >= 504 || (LUA_VERSION_NUM >= 502 && !defined(LUA_COMPAT_LOADERS))
+    const char* realname = "searchers";
+#else
+    const char* realname = "loaders";
+#endif
 
     // stack content after the invoking of the function
     // get loader table
-    lua_getglobal(_state, "package");                                  /* L: package */
-    lua_getfield(_state, -1, "loaders");                               /* L: package, loaders */
+    lua_getglobal(_state, "package");   /* L: package */
+    lua_getfield(_state, -1, realname); /* L: package, loaders */
 
     // insert loader into index 2
-    lua_pushcfunction(_state, func);                                   /* L: package, loaders, func */
+    lua_pushcfunction(_state, func); /* L: package, loaders, func */
     for (int i = (int)(lua_objlen(_state, -2) + 1); i > 2; --i)
     {
-        lua_rawgeti(_state, -2, i - 1);                                /* L: package, loaders, func, function */
+        lua_rawgeti(_state, -2, i - 1); /* L: package, loaders, func, function */
         // we call lua_rawgeti, so the loader table now is at -3
-        lua_rawseti(_state, -3, i);                                    /* L: package, loaders, func */
+        lua_rawseti(_state, -3, i); /* L: package, loaders, func */
     }
-    lua_rawseti(_state, -2, 2);                                        /* L: package, loaders */
+    lua_rawseti(_state, -2, 2); /* L: package, loaders */
 
     // set loaders into package
-    lua_setfield(_state, -2, "loaders");                               /* L: package */
+    lua_setfield(_state, -2, realname); /* L: package */
 
     lua_pop(_state, 1);
 }

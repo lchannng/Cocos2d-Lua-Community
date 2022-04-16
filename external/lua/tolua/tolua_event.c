@@ -528,7 +528,9 @@ static int class_gc_event (lua_State* L)
 */
 TOLUA_API int class_gc_event (lua_State* L)
 {
-    void* u = *((void**)lua_touserdata(L,1));
+    void** pu = (void**)lua_touserdata(L, 1);
+    if (!pu) return 0;
+    void* u = *pu;
     int top;
     /*fprintf(stderr, "collecting: looking at %p\n", u);*/
     /*

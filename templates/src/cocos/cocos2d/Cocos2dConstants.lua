@@ -426,22 +426,22 @@ cc.LightType =
 }
 cc.LightFlag = 
 {
-    LIGHT0  = math.pow(2,0),
-    LIGHT1  = math.pow(2,1),
-    LIGHT2  = math.pow(2,2),
-    LIGHT3  = math.pow(2,3),
-    LIGHT4  = math.pow(2,4),
-    LIGHT5  = math.pow(2,5),
-    LIGHT6  = math.pow(2,6),
-    LIGHT7  = math.pow(2,7),
-    LIGHT8  = math.pow(2,8),
-    LIGHT9  = math.pow(2,9),
-    LIGHT10 = math.pow(2,10),
-    LIGHT11 = math.pow(2,11),
-    LIGHT12 = math.pow(2,12),
-    LIGHT13 = math.pow(2,13),
-    LIGHT14 = math.pow(2,14),
-    LIGHT15 = math.pow(2,15),
+    LIGHT0  = 2^0, -- math.pow(2,0),
+    LIGHT1  = 2^1, -- math.pow(2,1),
+    LIGHT2  = 2^2, -- math.pow(2,2),
+    LIGHT3  = 2^3, -- math.pow(2,3),
+    LIGHT4  = 2^4, -- math.pow(2,4),
+    LIGHT5  = 2^5, -- math.pow(2,5),
+    LIGHT6  = 2^6, -- math.pow(2,6),
+    LIGHT7  = 2^7, -- math.pow(2,7),
+    LIGHT8  = 2^8, -- math.pow(2,8),
+    LIGHT9  = 2^9, -- math.pow(2,9),
+    LIGHT10 = 2^10, -- math.pow(2,10),
+    LIGHT11 = 2^11, -- math.pow(2,11),
+    LIGHT12 = 2^12, -- math.pow(2,12),
+    LIGHT13 = 2^13, -- math.pow(2,13),
+    LIGHT14 = 2^14, -- math.pow(2,14),
+    LIGHT15 = 2^15, -- math.pow(2,15),
 }
 -- color
 cc.RED = cc.c3b(255,0,0)

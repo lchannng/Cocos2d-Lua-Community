@@ -6093,7 +6093,7 @@ int lua_cocos2dx_physics3d_Physics3DHingeConstraint_getHingeAngle(lua_State* tol
 
     return 0;
 }
-int lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity(lua_State* tolua_S)
+int lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelocity(lua_State* tolua_S)
 {
     int argc = 0;
     cocos2d::Physics3DHingeConstraint* cobj = nullptr;
@@ -6113,7 +6113,7 @@ int lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity(lua_S
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelocity'", nullptr);
         return 0;
     }
 #endif
@@ -6123,19 +6123,19 @@ int lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity(lua_S
     {
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelocity'", nullptr);
             return 0;
         }
-        double ret = cobj->getMotorTargetVelosity();
+        double ret = cobj->getMotorTargetVelocity();
         tolua_pushnumber(tolua_S,(lua_Number)ret);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.Physics3DHingeConstraint:getMotorTargetVelosity",argc, 0);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.Physics3DHingeConstraint:getMotorTargetVelocity",argc, 0);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelocity'.",&tolua_err);
 #endif
 
     return 0;
@@ -7346,7 +7346,7 @@ int lua_register_cocos2dx_physics3d_Physics3DHingeConstraint(lua_State* tolua_S)
     tolua_beginmodule(tolua_S,"Physics3DHingeConstraint");
         tolua_function(tolua_S,"new",lua_cocos2dx_physics3d_Physics3DHingeConstraint_constructor);
         tolua_function(tolua_S,"getHingeAngle",lua_cocos2dx_physics3d_Physics3DHingeConstraint_getHingeAngle);
-        tolua_function(tolua_S,"getMotorTargetVelosity",lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelosity);
+        tolua_function(tolua_S,"getMotorTargetVelocity",lua_cocos2dx_physics3d_Physics3DHingeConstraint_getMotorTargetVelocity);
         tolua_function(tolua_S,"getFrameOffsetA",lua_cocos2dx_physics3d_Physics3DHingeConstraint_getFrameOffsetA);
         tolua_function(tolua_S,"getFrameOffsetB",lua_cocos2dx_physics3d_Physics3DHingeConstraint_getFrameOffsetB);
         tolua_function(tolua_S,"setMaxMotorImpulse",lua_cocos2dx_physics3d_Physics3DHingeConstraint_setMaxMotorImpulse);

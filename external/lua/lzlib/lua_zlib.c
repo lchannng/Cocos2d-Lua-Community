@@ -15,6 +15,12 @@
 
 #endif
 
+#if LUA_VERSION_NUM >= 502
+#  define new_lib(L, l) (luaL_newlib(L, l))
+#else
+#  define new_lib(L, l) (lua_newtable(L), luaL_register(L, NULL, l))
+#endif
+
 typedef uLong (*checksum_t)        (uLong crc, const Bytef *buf, uInt len);
 typedef uLong (*checksum_combine_t)(uLong crc1, uLong crc2, z_off_t len2);
 
@@ -208,7 +214,7 @@ static void lz_create_deflate_mt(lua_State *L) {
 }
 
 static int lz_deflate_new(lua_State *L) {
-    int level = luaL_optint(L, 1, Z_DEFAULT_COMPRESSION);
+    int level = luaL_optinteger(L, 1, Z_DEFAULT_COMPRESSION);
 
     /*  Allocate the stream: */
     z_stream* stream = (z_stream*)lua_newuserdata(L, sizeof(z_stream));
@@ -370,7 +376,11 @@ LUALIB_API int luaopen_zlib(lua_State * const L) {
     lz_create_deflate_mt(L);
     lz_create_inflate_mt(L);
 
-    luaL_register(L, "zlib", zlib_functions);
+    new_lib(L, zlib_functions);
+    lua_pushvalue(L, -1);
+    lua_setglobal(L, "zlib");
+
+    // luaL_register(L, "zlib", zlib_functions);
 
     SETINT("BEST_SPEED", Z_BEST_SPEED);
     SETINT("BEST_COMPRESSION", Z_BEST_COMPRESSION);

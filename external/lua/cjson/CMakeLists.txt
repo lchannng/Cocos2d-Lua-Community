@@ -16,13 +16,13 @@ add_library(${target_name} STATIC
 )
 
 target_include_directories(${target_name}
-  PRIVATE ../luajit/include
+  PRIVATE ${LUA_INCLUDE_DIR}
 )
 
 set_target_properties(${target_name}
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    FOLDER "External"
+    FOLDER "External/lua"
 )
 
