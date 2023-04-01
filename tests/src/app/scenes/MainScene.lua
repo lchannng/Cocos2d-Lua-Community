@@ -10,6 +10,8 @@ function MainScene:ctor()
 		"Test_Audio",
 		"Test_ClippingRectangleNode",
 		"Test_CocosStudio",
+		"Test_DragonBones",
+		"Test_EditBox",
 		"Test_FairyGUI",
 		"Test_KeypadEvent",
 		"Test_LuaProtobuf",

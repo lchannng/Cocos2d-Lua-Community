@@ -247,20 +247,6 @@ function Node:isKeypadEnabled()
 	return false
 end
 
-local function MouseEventCodeConvert(code)
-	local key
-	if code == 0 then
-		key = "left"
-	elseif code == 1 then
-		key = "right"
-	elseif code == 2 then
-		key = "middle"
-	else
-		key = tostring(code)
-	end
-	return key
-end
-
 function Node:setMouseEnabled(enable)
 	if enable == self:isMouseEnabled() then
 		return self
@@ -270,20 +256,14 @@ function Node:setMouseEnabled(enable)
 	if enable then
 		local dealFunc = function(mouse, name)
 			local tp = mouse:getLocationInView()
-			local sp = mouse:getStartLocationInView()
-			local pp = mouse:getPreviousLocationInView()
-
 			-- call listener
 			self._LuaListeners[c.MOUSE_EVENT]{
 				name = name,
 				x = tp.x,
 				y = tp.y,
-				startX = sp.x,
-				startY = sp.y,
-				prevX = pp.x,
-				prevY = pp.y,
-				scroll = mouse:getScrollY(),
-				key = MouseEventCodeConvert(mouse:getMouseButton())
+				scrollX = mouse:getScrollX(),
+				scrollY = mouse:getScrollY(),
+				button = mouse:getMouseButton()
 			}
 		end
 
